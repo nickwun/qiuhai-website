@@ -6,10 +6,10 @@
 
 服务器使用 Ubuntu 24.04 LTS。首次部署前由管理员手动完成：
 
-1. 安装 Nginx、rsync，并创建专用部署用户。
+1. 按 `docs/server-bootstrap.md` 先做 dry-run，再由管理员在服务器本机安装 Nginx、rsync、curl、ufw 并创建专用部署用户。
 2. 创建 `/var/www/qiuhai/releases/`，授权部署用户写入。
 3. 将 `deploy/nginx/qiuhai.net.cn.conf` 安装到 Nginx 站点配置并检查语法。
-4. 配置 SSH key；密钥、密码、主机地址都不得写入仓库。
+4. 配置部署用户 SSH 公钥并在独立终端验证；私钥、密码、主机地址都不得写入仓库。
 
 推荐目录：
 
@@ -44,6 +44,8 @@ export LIGHTHOUSE_PATH=/var/www/qiuhai
 ```
 
 不要把这些值写进脚本、README、提交的 `.env` 或命令历史。项目只提交 `.env.example`。
+
+`LIGHTHOUSE_USER` 必须是非 root 专用部署用户，`LIGHTHOUSE_PATH` 固定为 `/var/www/qiuhai`。
 
 ## 验证、部署与回滚
 

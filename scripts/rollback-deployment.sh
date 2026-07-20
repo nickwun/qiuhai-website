@@ -6,6 +6,15 @@ set -Eeuo pipefail
 : "${LIGHTHOUSE_PORT:?必须设置 LIGHTHOUSE_PORT}"
 : "${LIGHTHOUSE_PATH:?必须设置 LIGHTHOUSE_PATH}"
 
+if [[ "$LIGHTHOUSE_USER" == "root" ]]; then
+  echo "LIGHTHOUSE_USER 不得为 root；请使用专用部署用户。" >&2
+  exit 2
+fi
+if [[ "$LIGHTHOUSE_PATH" != "/var/www/qiuhai" ]]; then
+  echo "LIGHTHOUSE_PATH 必须为 /var/www/qiuhai。" >&2
+  exit 2
+fi
+
 REMOTE="${LIGHTHOUSE_USER}@${LIGHTHOUSE_HOST}"
 SSH=(ssh -p "$LIGHTHOUSE_PORT")
 

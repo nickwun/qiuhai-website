@@ -23,6 +23,15 @@ fi
 : "${LIGHTHOUSE_PORT:?必须设置 LIGHTHOUSE_PORT}"
 : "${LIGHTHOUSE_PATH:?必须设置 LIGHTHOUSE_PATH}"
 
+if [[ "$LIGHTHOUSE_USER" == "root" ]]; then
+  echo "LIGHTHOUSE_USER 不得为 root；请使用专用部署用户。" >&2
+  exit 2
+fi
+if [[ "$LIGHTHOUSE_PATH" != "/var/www/qiuhai" ]]; then
+  echo "LIGHTHOUSE_PATH 必须为 /var/www/qiuhai。" >&2
+  exit 2
+fi
+
 RELEASE_ID="$(date -u +%Y%m%dT%H%M%SZ)-$(git rev-parse --short HEAD)"
 REMOTE="${LIGHTHOUSE_USER}@${LIGHTHOUSE_HOST}"
 RELEASE_PATH="${LIGHTHOUSE_PATH}/releases/${RELEASE_ID}"

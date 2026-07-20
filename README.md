@@ -98,6 +98,7 @@ ICP备案完成前保持 `PUBLIC_INDEXING=false`。样本页无论该变量为�
 本地无远端修改演练：
 
 ```bash
+./scripts/server-bootstrap.sh --dry-run
 ./scripts/deploy-manual.sh --dry-run
 ```
 
@@ -107,7 +108,7 @@ ICP备案完成前保持 `PUBLIC_INDEXING=false`。样本页无论该变量为�
 HEALTHCHECK_URL=https://qiuhai.net.cn ./scripts/deploy-manual.sh
 ```
 
-完整准备步骤、Nginx 配置与回滚方式见 `docs/deployment-lighthouse.md`。EdgeOne Pages 仅作为 `future_optional_deployment` 保留，不是当前默认目标。
+Ubuntu 24.04 初始化边界见 `docs/server-bootstrap.md`；Nginx 配置、发布与回滚方式见 `docs/deployment-lighthouse.md`。EdgeOne Pages 仅作为 `future_optional_deployment` 保留，不是当前默认目标。
 
 ## 目录结构
 
