@@ -1,5 +1,6 @@
 ---
 import type { Project } from "../data/projects";
+import { SITE_CONFIG } from "../config";
 
 interface Props {
   project: Project;
@@ -20,6 +21,8 @@ const { project, compact = false } = Astro.props;
     {
       project.link && project.linkLabel ? (
         <a class="text-link" href={project.link}>{project.linkLabel} <span aria-hidden="true">→</span></a>
+      ) : project.purchaseControlled && !SITE_CONFIG.showProductPurchase ? (
+        <span class="project-link-state">购买入口将在网站正式上线后补充。</span>
       ) : (
         <span class="project-link-state">链接待补充</span>
       )

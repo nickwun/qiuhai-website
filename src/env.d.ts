@@ -3,6 +3,7 @@
 interface ImportMetaEnv {
   readonly SITE_URL?: string;
   readonly PUBLIC_INDEXING?: string;
+  readonly PUBLIC_SHOW_PRODUCT_PURCHASE?: string;
   readonly ICP_NUMBER?: string;
   readonly ICP_URL?: string;
   readonly PUBLIC_SECURITY_NUMBER?: string;

@@ -6,6 +6,7 @@ export interface Project {
   linkLabel: string | null;
   featured: boolean;
   order: number;
+  purchaseControlled?: boolean;
 }
 
 export const PROJECTS: readonly Project[] = [
@@ -17,6 +18,7 @@ export const PROJECTS: readonly Project[] = [
     linkLabel: null,
     featured: true,
     order: 1,
+    purchaseControlled: true,
   },
   {
     title: "Hui in Small Town China",

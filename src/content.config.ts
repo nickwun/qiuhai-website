@@ -18,6 +18,7 @@ const articles = defineCollection({
     originalPlatform: z.string().min(1).optional(),
     originalUrl: z.url().optional(),
     cover: z.string().min(1).optional(),
+    purchaseQr: z.string().startsWith("/").optional(),
   }),
 });
 

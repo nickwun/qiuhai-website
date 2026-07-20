@@ -180,6 +180,7 @@ test("environment example declares centralized production settings without fake 
   for (const key of [
     "SITE_URL",
     "PUBLIC_INDEXING",
+    "PUBLIC_SHOW_PRODUCT_PURCHASE",
     "ICP_NUMBER",
     "ICP_URL",
     "PUBLIC_SECURITY_NUMBER",
@@ -189,6 +190,7 @@ test("environment example declares centralized production settings without fake 
   }
   assert.match(env, /^SITE_URL=https:\/\/qiuhai\.net\.cn$/m);
   assert.match(env, /^PUBLIC_INDEXING=false$/m);
+  assert.match(env, /^PUBLIC_SHOW_PRODUCT_PURCHASE=false$/m);
   assert.match(env, /^ICP_NUMBER=$/m);
   assert.match(env, /^PUBLIC_SECURITY_NUMBER=$/m);
 });

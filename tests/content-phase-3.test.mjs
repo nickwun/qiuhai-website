@@ -79,13 +79,14 @@ test("importing a source title never deletes the same words from a real opening 
   assert.doesNotMatch(article, /今天。事情是这样的。/);
 });
 
-test("the approved handbook QR image is local and remains at the end of the low-heart-rate article", () => {
+test("the approved handbook QR image remains local and is declared as controlled metadata", () => {
   const imagePath = "public/images/articles/does-low-heart-rate-running-work/handbook-qr.png";
   const markdownPath = "/images/articles/does-low-heart-rate-running-work/handbook-qr.png";
   const article = read("src/content/articles/does-low-heart-rate-running-work.md").trim();
 
   assert.equal(existsSync(join(root, imagePath)), true, "missing approved handbook QR image");
-  assert.ok(article.endsWith(`![低心率慢跑手册二维码](${markdownPath})`));
+  assert.match(article, new RegExp(`^purchaseQr: ${markdownPath.replaceAll("/", "\\/")}$`, "m"));
+  assert.doesNotMatch(article, /!\[低心率慢跑手册二维码\]/);
   assert.doesNotMatch(article, /关注我/);
 });
 
