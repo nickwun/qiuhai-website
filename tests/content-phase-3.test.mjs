@@ -79,6 +79,16 @@ test("importing a source title never deletes the same words from a real opening 
   assert.doesNotMatch(article, /今天。事情是这样的。/);
 });
 
+test("the approved handbook QR image is local and remains at the end of the low-heart-rate article", () => {
+  const imagePath = "public/images/articles/does-low-heart-rate-running-work/handbook-qr.png";
+  const markdownPath = "/images/articles/does-low-heart-rate-running-work/handbook-qr.png";
+  const article = read("src/content/articles/does-low-heart-rate-running-work.md").trim();
+
+  assert.equal(existsSync(join(root, imagePath)), true, "missing approved handbook QR image");
+  assert.ok(article.endsWith(`![低心率慢跑手册二维码](${markdownPath})`));
+  assert.doesNotMatch(article, /关注我/);
+});
+
 test("privacy scanner rejects high-risk data and remote image hotlinks", () => {
   assert.equal(existsSync(join(root, "scripts/check-public-content.mjs")), true, "missing privacy scanner");
   const fixtureRoot = mkdtempSync(join(tmpdir(), "qiuhai-privacy-fixture-"));

@@ -76,7 +76,7 @@ cover: /images/cover.jpg # 可选
 node scripts/import-wechat-articles.mjs /path/to/wechat-download
 ```
 
-脚本只读取该目录下已确认的三篇文章和对应图片；会生成站内 Markdown、本地化 5 张正文图片，并排除已记录的二维码和公众号尾部推广图片。导入后仍需运行 `npm run check:content` 和人工隐私复核。
+脚本只读取该目录下已确认的三篇文章和对应图片；会生成站内 Markdown、本地化 6 张正文图片，保留用户确认的手册推广二维码，并排除 3 张“关注我”动图。导入后仍需运行 `npm run check:content` 和人工隐私复核。
 
 ## 环境变量
 
