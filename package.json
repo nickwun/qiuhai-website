@@ -1,7 +1,11 @@
 {
-  "name": "qiuhai-blog",
+  "name": "qiuhai-website",
   "version": "0.1.0",
   "private": true,
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nickwun/qiuhai-website.git"
+  },
   "type": "module",
   "scripts": {
     "dev": "astro dev",
