@@ -1,0 +1,80 @@
+---
+import { getCollection, render, type CollectionEntry } from "astro:content";
+import { CATEGORY_NAMES, SITE } from "../../consts";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+
+export async function getStaticPaths() {
+  const posts = await getCollection("articles", ({ data }) => !data.draft);
+  return posts.map((post) => ({ params: { slug: post.data.slug }, props: { post } }));
+}
+
+interface Props {
+  post: CollectionEntry<"articles">;
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+const categoryName = CATEGORY_NAMES[post.data.category];
+const articleUrl = new URL(`/articles/${post.data.slug}/`, Astro.site);
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  headline: post.data.title,
+  description: post.data.description,
+  datePublished: post.data.publishedAt.toISOString(),
+  dateModified: (post.data.updatedAt ?? post.data.publishedAt).toISOString(),
+  mainEntityOfPage: articleUrl.href,
+  author: { "@type": "Person", name: SITE.author },
+  publisher: { "@type": "Person", name: SITE.author },
+  keywords: post.data.tags.join(", "),
+  articleSection: categoryName,
+  ...(post.data.cover ? { image: new URL(post.data.cover, Astro.site).href } : {}),
+};
+---
+
+<BaseLayout
+  title={post.data.title}
+  description={post.data.description}
+  type="article"
+  cover={post.data.cover}
+  publishedAt={post.data.publishedAt}
+  updatedAt={post.data.updatedAt}
+  jsonLd={jsonLd}
+>
+  <article>
+    <header class="article-header reading-width">
+      <p class="eyebrow">{categoryName}</p>
+      <h1>{post.data.title}</h1>
+      <p class="article-lead">{post.data.description}</p>
+      <div class="article-byline">
+        <span>{SITE.author}</span>
+        <time datetime={post.data.publishedAt.toISOString()}>
+          发布于 {post.data.publishedAt.toLocaleDateString("zh-CN")}
+        </time>
+        {
+          post.data.updatedAt && (
+            <time datetime={post.data.updatedAt.toISOString()}>
+              更新于 {post.data.updatedAt.toLocaleDateString("zh-CN")}
+            </time>
+          )
+        }
+      </div>
+    </header>
+    <div class="article-body reading-width">
+      <div class="prose"><Content /></div>
+      <footer class="article-footer">
+        <ul class="tag-list" aria-label="文章标签">
+          {post.data.tags.map((tag) => <li>{tag}</li>)}
+        </ul>
+        {
+          post.data.originalPlatform && (
+            <p>
+              首发于 {post.data.originalPlatform}
+              {post.data.originalUrl && <> · <a href={post.data.originalUrl}>查看原文</a></>}
+            </p>
+          )
+        }
+      </footer>
+    </div>
+  </article>
+</BaseLayout>

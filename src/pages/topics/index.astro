@@ -1,0 +1,25 @@
+---
+import { getCollection } from "astro:content";
+import PageIntro from "../../components/PageIntro.astro";
+import { TOPICS } from "../../consts";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+
+const posts = await getCollection("articles", ({ data }) => !data.draft);
+---
+
+<BaseLayout title="专题" description="秋海的跑步、创作与生活专题。">
+  <PageIntro eyebrow="Topics" title="专题" description="按长期关注的主题重新组织文章。先从三个最熟悉的方向开始。" />
+  <section class="shell page-content">
+    <div class="topic-grid">
+      {
+        TOPICS.map((topic) => (
+          <a class="topic-card" href={`/topics/${topic.slug}/`}>
+            <span class="topic-marker">{topic.marker} · {posts.filter(({ data }) => data.category === topic.slug).length} 篇</span>
+            <h2>{topic.name}</h2>
+            <p>{topic.description}</p>
+          </a>
+        ))
+      }
+    </div>
+  </section>
+</BaseLayout>

@@ -1,0 +1,19 @@
+---
+import { getCollection } from "astro:content";
+import ArticleCard from "../../components/ArticleCard.astro";
+import PageIntro from "../../components/PageIntro.astro";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+
+const posts = (await getCollection("articles", ({ data }) => !data.draft)).sort(
+  (a, b) => b.data.publishedAt.valueOf() - a.data.publishedAt.valueOf(),
+);
+---
+
+<BaseLayout title="文章" description="秋海关于跑步、写作与普通生活的公开文章。">
+  <PageIntro eyebrow="Archive" title="文章" description="按时间整理所有公开文章。它们来自不同阶段，也保留各自当时的语气。" />
+  <section class="shell page-content">
+    <div class="page-article-list">
+      {posts.map((post) => <ArticleCard post={post} />)}
+    </div>
+  </section>
+</BaseLayout>

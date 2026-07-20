@@ -1,0 +1,25 @@
+---
+import PageIntro from "../components/PageIntro.astro";
+import BaseLayout from "../layouts/BaseLayout.astro";
+---
+
+<BaseLayout title="作品" description="秋海的公开作品与项目。">
+  <PageIntro eyebrow="Works" title="作品与项目" description="这里归档已经适合公开展示的作品，也记录一些仍在缓慢推进的小项目。" />
+  <section class="shell page-content work-list">
+    <article>
+      <p class="work-kicker">ARCHIVE</p>
+      <h2>公开文章归档</h2>
+      <p>逐步整理公众号与其他公开渠道中的最终版本。所有迁移内容都以明确确认的公开终稿为准。</p>
+    </article>
+    <article>
+      <p class="work-kicker">WEBSITE</p>
+      <h2>秋海个人博客</h2>
+      <p>一个用 Astro 和 Markdown 搭建的静态网站，也是练习内容组织、网页设计与长期维护的起点。</p>
+    </article>
+    <article>
+      <p class="work-kicker">EXPERIMENTS</p>
+      <h2>内容与工具实验</h2>
+      <p>围绕写作、跑步和个人知识管理做的小型实践。这里仅展示公开结果，不包含私人知识库内容。</p>
+    </article>
+  </section>
+</BaseLayout>

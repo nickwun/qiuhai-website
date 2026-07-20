@@ -1,0 +1,29 @@
+---
+import type { CollectionEntry } from "astro:content";
+import { CATEGORY_NAMES } from "../consts";
+
+interface Props {
+  post: CollectionEntry<"articles">;
+  compact?: boolean;
+}
+
+const { post, compact = false } = Astro.props;
+---
+
+<article class:list={["article-card", { compact }]}>
+  <div class="article-meta">
+    <span>{CATEGORY_NAMES[post.data.category]}</span>
+    <time datetime={post.data.publishedAt.toISOString()}>
+      {post.data.publishedAt.toLocaleDateString("zh-CN", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      })}
+    </time>
+  </div>
+  <h2><a href={`/articles/${post.data.slug}/`}>{post.data.title}</a></h2>
+  <p>{post.data.description}</p>
+  <a class="text-link" href={`/articles/${post.data.slug}/`} aria-label={`阅读《${post.data.title}》`}>
+    阅读文章 <span aria-hidden="true">→</span>
+  </a>
+</article>
