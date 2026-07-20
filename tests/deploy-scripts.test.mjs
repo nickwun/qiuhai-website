@@ -126,3 +126,14 @@ test("the Nginx template is static HTTP-only preparation with the expected docum
   assert.match(nginx, /listen 80;/);
   assert.doesNotMatch(nginx, /listen 443|ssl_certificate|proxy_pass/);
 });
+
+test("the main protection status check runs the existing baseline commands without deploying", () => {
+  const workflowPath = ".github/workflows/v1-baseline.yml";
+  assert.equal(existsSync(join(root, workflowPath)), true, `missing ${workflowPath}`);
+  const workflow = read(workflowPath);
+  for (const command of ["npm run check", "npm test", "npm run build"])
+    assert.match(workflow, new RegExp(command.replaceAll(" ", "\\s+")));
+  assert.match(workflow, /pull_request:/);
+  assert.match(workflow, /branches:\s*\[main\]/);
+  assert.doesNotMatch(workflow, /deploy-manual|server-bootstrap|\bssh\b|rsync/);
+});
