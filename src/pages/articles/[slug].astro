@@ -1,6 +1,7 @@
 ---
 import { render, type CollectionEntry } from "astro:content";
 import { CATEGORY_NAMES, SITE } from "../../consts";
+import { SITE_CONFIG } from "../../config";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { getPublicArticles } from "../../lib/articles";
 
@@ -63,6 +64,17 @@ const jsonLd = {
     </header>
     <div class="article-body reading-width">
       <div class="prose"><Content /></div>
+      {
+        post.data.purchaseQr && (
+          SITE_CONFIG.showProductPurchase ? (
+            <figure class="purchase-entry">
+              <img src={post.data.purchaseQr} alt="低心率慢跑手册二维码" loading="lazy" />
+            </figure>
+          ) : (
+            <p class="purchase-entry-note">购买入口将在网站正式上线后补充。</p>
+          )
+        )
+      }
       <footer class="article-footer">
         <ul class="tag-list" aria-label="文章标签">
           {post.data.tags.map((tag) => <li>{tag}</li>)}

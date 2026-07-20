@@ -653,6 +653,25 @@ h3 {
   border-top: 1px solid var(--line);
 }
 
+.purchase-entry {
+  margin: 2.4em 0 0;
+  text-align: center;
+}
+
+.purchase-entry img {
+  display: block;
+  max-width: min(100%, 360px);
+  height: auto;
+  margin: 0 auto;
+}
+
+.purchase-entry-note {
+  margin: 2.4em 0 0;
+  color: var(--muted);
+  font-family: var(--font-sans);
+  font-size: 0.9rem;
+}
+
 .article-footer {
   margin-top: 64px;
   padding-top: 28px;

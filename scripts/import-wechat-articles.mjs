@@ -26,7 +26,8 @@ const articles = [
       ["001.jpg", "maf-test-table.jpg", "两年 24 次 MAF 测试记录表"],
       ["002.png", "maf-test-trend.png", "两年 MAF 测试配速趋势图"],
     ],
-    appendImages: [["003.png", "handbook-qr.png", "低心率慢跑手册二维码"]],
+    controlledImages: [["003.png", "handbook-qr.png", "低心率慢跑手册二维码"]],
+    purchaseQr: "/images/articles/does-low-heart-rate-running-work/handbook-qr.png",
   },
   {
     sourceTitle: "被 AI 跑步教练批评了",
@@ -89,10 +90,7 @@ function formatBody(raw, article) {
     .join("\n\n")
     .trim();
 
-  const appendedImages = (article.appendImages ?? []).map(
-    (image) => `![${image[2]}](/images/articles/${article.slug}/${image[1]})`,
-  );
-  return [formattedBody, ...appendedImages].filter(Boolean).join("\n\n");
+  return formattedBody;
 }
 
 for (const article of articles) {
@@ -113,6 +111,7 @@ for (const article of articles) {
     "sample: false",
     "originalPlatform: 微信公众号",
     `originalUrl: ${article.sourceUrl}`,
+    ...(article.purchaseQr ? [`purchaseQr: ${article.purchaseQr}`] : []),
     "---",
     "",
     "",
@@ -124,7 +123,7 @@ for (const article of articles) {
   const targetImages = join(imageDirectory, article.slug);
   mkdirSync(targetImages, { recursive: true });
   const sourceImages = join(sourceRoot, "images", article.sourceTitle);
-  for (const [sourceName, targetName] of [...article.images, ...(article.appendImages ?? [])]) {
+  for (const [sourceName, targetName] of [...article.images, ...(article.controlledImages ?? [])]) {
     copyFileSync(join(sourceImages, sourceName), join(targetImages, targetName));
   }
 

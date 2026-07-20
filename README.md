@@ -76,7 +76,7 @@ cover: /images/cover.jpg # 可选
 node scripts/import-wechat-articles.mjs /path/to/wechat-download
 ```
 
-脚本只读取该目录下已确认的三篇文章和对应图片；会生成站内 Markdown、本地化 6 张正文图片，保留用户确认的手册推广二维码，并排除 3 张“关注我”动图。导入后仍需运行 `npm run check:content` 和人工隐私复核。
+脚本只读取该目录下已确认的三篇文章和对应图片；会生成站内 Markdown、本地化 6 张图片，将用户确认的手册推广二维码登记为受控购买入口，并排除 3 张“关注我”动图。导入后仍需运行 `npm run check:content` 和人工隐私复核。
 
 ## 环境变量
 
@@ -86,10 +86,11 @@ node scripts/import-wechat-articles.mjs /path/to/wechat-download
 | --- | --- | --- |
 | `SITE_URL` | canonical、Open Graph、RSS、Sitemap | `https://qiuhai.net.cn` |
 | `PUBLIC_INDEXING` | 是否允许正式页面被索引 | `false` |
+| `PUBLIC_SHOW_PRODUCT_PURCHASE` | 是否显示手册购买二维码与购买入口 | `false` |
 | `ICP_NUMBER` / `ICP_URL` | ICP 备案展示 | 空，不渲染 |
 | `PUBLIC_SECURITY_NUMBER` / `PUBLIC_SECURITY_URL` | 公安备案展示 | 空，不渲染 |
 
-ICP备案完成前保持 `PUBLIC_INDEXING=false`。样本页无论该变量为何值都始终 `noindex`。
+ICP备案审核期间保持 `PUBLIC_INDEXING=false` 和 `PUBLIC_SHOW_PRODUCT_PURCHASE=false`。只有明确设置 `PUBLIC_SHOW_PRODUCT_PURCHASE=true` 时，文章才会显示已本地化的手册二维码；样本页无论索引变量为何值都始终 `noindex`。
 
 ## 部署
 
