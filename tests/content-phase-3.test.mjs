@@ -49,23 +49,34 @@ test("three typed projects render in order with honest link states", () => {
   assert.match(works, /href="\/about\/"/);
 });
 
-test("missing final articles remain an explicit import blocker", () => {
+test("the import report records all formal sources, dates, cleanup, and privacy review", () => {
   assert.equal(existsSync(join(root, "docs/content-import-report.md")), true, "missing content import report");
   const report = read("docs/content-import-report.md");
   for (const title of expectedArticles) {
     assert.match(report, new RegExp(title.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
   }
-  assert.match(report, /未提供终稿/);
-  assert.match(report, /不得公开/);
+  for (const date of ["2026-06-05", "2026-06-14", "2026-06-17"]) assert.match(report, new RegExp(date));
+  for (const source of ["JukCjvuoM9XvV8RyQHIkdQ", "Y-lFQ0f0I4AKL7WR8DolQg", "69Ewdpi8g_zX366qmfCG9A"])
+    assert.match(report, new RegExp(source));
+  assert.match(report, /成功导入文章数为 3/);
+  assert.match(report, /二维码/);
+  assert.match(report, /人工确认/);
+  assert.doesNotMatch(report, /未提供终稿/);
 });
 
-test("privacy scanner reports the clean baseline and all missing finals", () => {
+test("privacy scanner reports three formal articles without automated high-risk matches", () => {
   const result = spawnSync("node", ["scripts/check-public-content.mjs", "--json"], { cwd: root, encoding: "utf8" });
   assert.equal(result.status, 0, result.stderr);
   const output = JSON.parse(result.stdout);
-  assert.equal(output.formalArticleCount, 0);
-  assert.deepEqual(output.missingTitles, expectedArticles);
+  assert.equal(output.formalArticleCount, 3);
+  assert.deepEqual(output.missingTitles, []);
   assert.deepEqual(output.risks, []);
+});
+
+test("importing a source title never deletes the same words from a real opening sentence", () => {
+  const article = read("src/content/articles/i-gave-data-the-power-to-judge-me.md");
+  assert.match(article, /今天被 AI 跑步教练批评了。事情是这样的。/);
+  assert.doesNotMatch(article, /今天。事情是这样的。/);
 });
 
 test("privacy scanner rejects high-risk data and remote image hotlinks", () => {

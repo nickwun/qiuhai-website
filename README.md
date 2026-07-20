@@ -70,6 +70,14 @@ cover: /images/cover.jpg # 可选
 
 正式文章导入格式见 `docs/article-import-template.md`，本批导入状态与人工隐私确认项见 `docs/content-import-report.md`。终稿文件、首次发布日期或公开授权缺失时，不创建占位正式文章。
 
+首批三篇微信公众号文章可从下载目录重复执行确定性导入：
+
+```bash
+node scripts/import-wechat-articles.mjs /path/to/wechat-download
+```
+
+脚本只读取该目录下已确认的三篇文章和对应图片；会生成站内 Markdown、本地化 5 张正文图片，并排除已记录的二维码和公众号尾部推广图片。导入后仍需运行 `npm run check:content` 和人工隐私复核。
+
 ## 环境变量
 
 复制 `.env.example` 为本机 `.env`，但不要提交 `.env`。

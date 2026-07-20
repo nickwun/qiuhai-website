@@ -113,7 +113,11 @@ if (json) {
   console.log(`公开文章检查：${result.formalArticleCount} 篇正式文章。`);
   if (result.missingTitles.length > 0) console.log(`待提供终稿：${result.missingTitles.join("；")}`);
   if (result.risks.length === 0) {
-    console.log("自动隐私与图片热链规则：未发现命中项。尚未提供的正文不在检查范围内。");
+    console.log(
+      result.missingTitles.length > 0
+        ? "自动隐私与图片热链规则：已导入正文未发现命中项；尚未提供的正文不在检查范围内。"
+        : "自动隐私与图片热链规则：未发现命中项。",
+    );
   } else {
     for (const risk of result.risks)
       console.error(`${risk.file}:${risk.line} [${risk.code}] ${risk.message}`);
