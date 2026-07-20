@@ -13,7 +13,9 @@
     "check": "astro check",
     "build": "astro build",
     "preview": "astro preview",
-    "test": "node --test tests/*.test.mjs"
+    "pretest": "npm run build",
+    "test": "node --test tests/*.test.mjs && node scripts/verify-build-modes.mjs && node scripts/check-responsive.mjs",
+    "test:responsive": "node scripts/check-responsive.mjs"
   },
   "dependencies": {
     "@astrojs/rss": "^4.0.19",
@@ -22,6 +24,7 @@
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.9",
+    "playwright": "^1.61.1",
     "typescript": "^5.9.3"
   },
   "engines": {

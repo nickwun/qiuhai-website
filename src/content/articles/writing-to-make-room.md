@@ -9,6 +9,7 @@ tags:
 slug: writing-to-make-room
 featured: true
 draft: false
+sample: true
 ---
 
 > 说明：这是一篇排版示例，不代表站主的真实写作经历或方法论。

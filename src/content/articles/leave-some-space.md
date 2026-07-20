@@ -9,6 +9,7 @@ tags:
 slug: leave-some-space
 featured: true
 draft: false
+sample: true
 ---
 
 > 说明：这是一篇网站示例文章，不代表站主的真实生活记录。

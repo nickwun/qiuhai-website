@@ -1,5 +1,6 @@
 ---
 import { SITE } from "../consts";
+import { SITE_CONFIG } from "../config";
 
 const year = new Date().getFullYear();
 ---
@@ -11,5 +12,25 @@ const year = new Date().getFullYear();
       <a href="/rss.xml">RSS</a>
       <a href="/about/">关于本站</a>
     </div>
+    {
+      (SITE_CONFIG.filings.icp.number || SITE_CONFIG.filings.publicSecurity.number) && (
+        <div class="filing-links" aria-label="网站备案信息">
+          {SITE_CONFIG.filings.icp.number && (
+            SITE_CONFIG.filings.icp.url ? (
+              <a href={SITE_CONFIG.filings.icp.url} rel="nofollow">{SITE_CONFIG.filings.icp.number}</a>
+            ) : (
+              <span>{SITE_CONFIG.filings.icp.number}</span>
+            )
+          )}
+          {SITE_CONFIG.filings.publicSecurity.number && (
+            SITE_CONFIG.filings.publicSecurity.url ? (
+              <a href={SITE_CONFIG.filings.publicSecurity.url} rel="nofollow">{SITE_CONFIG.filings.publicSecurity.number}</a>
+            ) : (
+              <span>{SITE_CONFIG.filings.publicSecurity.number}</span>
+            )
+          )}
+        </div>
+      )
+    }
   </div>
 </footer>

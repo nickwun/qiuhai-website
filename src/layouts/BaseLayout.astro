@@ -1,6 +1,7 @@
 ---
 import SiteFooter from "../components/SiteFooter.astro";
 import SiteHeader from "../components/SiteHeader.astro";
+import { SITE_CONFIG } from "../config";
 import { SITE } from "../consts";
 import "../styles/global.css";
 
@@ -12,6 +13,7 @@ interface Props {
   publishedAt?: Date;
   updatedAt?: Date;
   jsonLd?: Record<string, unknown>;
+  noindex?: boolean;
 }
 
 const {
@@ -22,11 +24,13 @@ const {
   publishedAt,
   updatedAt,
   jsonLd,
+  noindex = false,
 } = Astro.props;
 
 const pageTitle = title === SITE.name ? `${SITE.name}｜${SITE.subtitle}` : `${title}｜${SITE.name}`;
 const canonical = new URL(Astro.url.pathname, Astro.site ?? Astro.url.origin);
 const ogImage = cover ? new URL(cover, Astro.site ?? Astro.url.origin) : undefined;
+const robots = SITE_CONFIG.indexing && !noindex ? "index, follow" : "noindex, nofollow";
 ---
 
 <!doctype html>
@@ -36,8 +40,10 @@ const ogImage = cover ? new URL(cover, Astro.site ?? Astro.url.origin) : undefin
     <meta name="viewport" content="width=device-width" />
     <meta name="generator" content={Astro.generator} />
     <meta name="theme-color" content="#f6f2ea" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <title>{pageTitle}</title>
     <meta name="description" content={description} />
+    <meta name="robots" content={robots} />
     <link rel="canonical" href={canonical} />
     <link rel="alternate" type="application/rss+xml" title={`${SITE.name} RSS`} href={new URL("rss.xml", Astro.site)} />
     <meta property="og:locale" content="zh_CN" />

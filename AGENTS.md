@@ -13,6 +13,8 @@
 - 默认不引入 React、Vue、Svelte 等前端框架；样式使用原生 CSS 和 CSS Variables。
 - 新增文章必须通过 `src/content.config.ts` 的 Schema，并设置唯一 `slug`。
 - `draft: true` 的文章不得进入公开列表、详情路由、RSS 或 sitemap。
+- `sample: true` 只用于本地 `/preview/samples/` 排版检查，不得进入生产页面、专题、RSS 或 sitemap；样本不得写成站主真实经历。
+- 正式文章必须同时满足 `draft: false` 与 `sample: false`。
 
 ## 设计与内容
 
@@ -27,3 +29,4 @@
 - 未经当前任务明确授权，不提交、不推送、不发布、不合并 main。
 - 提交时精确核对路径，不使用笼统暂存覆盖无关改动。
 - 宣称完成前运行 `npm test`、`npm run check` 与 `npm run build`，并检查关键页面的响应式表现。
+- 默认只准备腾讯云轻量应用服务器部署资产，不连接服务器、不部署正式域名、不修改 DNS、不申请证书；实际部署需用户在当前任务中另行明确授权。

@@ -24,6 +24,11 @@ test("required source pages and project files exist", () => {
     "src/pages/404.astro",
     "src/pages/rss.xml.ts",
     "src/pages/robots.txt.ts",
+    "src/pages/preview/samples/[...slug].astro",
+    "src/config.ts",
+    "src/lib/articles.ts",
+    "scripts/check-responsive.mjs",
+    "scripts/verify-build-modes.mjs",
   ];
 
   for (const file of requiredFiles) {
@@ -46,6 +51,7 @@ test("content schema declares every requested article field", () => {
     "originalPlatform",
     "originalUrl",
     "cover",
+    "sample",
   ];
 
   for (const field of fields) {
@@ -53,10 +59,10 @@ test("content schema declares every requested article field", () => {
   }
 });
 
-test("three example articles contain the required frontmatter", () => {
+test("four layout samples are explicitly marked as sample content", () => {
   const directory = join(root, "src/content/articles");
   const articles = readdirSync(directory).filter((file) => file.endsWith(".md"));
-  assert.equal(articles.length, 3);
+  assert.equal(articles.length, 4);
 
   const requiredFields = [
     "title",
@@ -67,6 +73,7 @@ test("three example articles contain the required frontmatter", () => {
     "slug",
     "featured",
     "draft",
+    "sample",
   ];
 
   for (const article of articles) {
@@ -74,6 +81,7 @@ test("three example articles contain the required frontmatter", () => {
     for (const field of requiredFields) {
       assert.match(content, new RegExp(`^${field}:`, "m"), `${article} missing ${field}`);
     }
+    assert.match(content, /^sample: true$/m, `${article} must be an explicit sample`);
   }
 });
 
@@ -100,9 +108,61 @@ test("production build exposes static discovery files and article metadata", () 
     assert.equal(existsSync(join(root, file)), true, `missing build output ${file}`);
   }
 
-  const article = read("dist/articles/why-i-keep-running/index.html");
-  assert.match(article, /property="og:type" content="article"/);
-  assert.match(article, /application\/ld\+json/);
-  assert.match(article, /"@type":"BlogPosting"/);
-  assert.match(article, /rel="canonical"/);
+  const layout = read("src/layouts/BaseLayout.astro");
+  const articleRoute = read("src/pages/articles/[slug].astro");
+  assert.match(layout, /property="og:type"/);
+  assert.match(articleRoute, /"@type": "BlogPosting"/);
+  assert.match(layout, /rel="canonical"/);
+});
+
+test("sample content is absent from every production discovery surface", () => {
+  const sampleSlugs = [
+    "leave-some-space",
+    "why-i-keep-running",
+    "writing-to-make-room",
+    "long-form-layout-sample",
+  ];
+  const publicOutputs = [
+    "dist/index.html",
+    "dist/articles/index.html",
+    "dist/topics/index.html",
+    "dist/topics/running/index.html",
+    "dist/topics/creation/index.html",
+    "dist/topics/life/index.html",
+    "dist/rss.xml",
+    "dist/sitemap-0.xml",
+  ].map(read).join("\n");
+
+  for (const slug of sampleSlugs) {
+    assert.doesNotMatch(publicOutputs, new RegExp(slug), `${slug} leaked into production output`);
+    assert.equal(existsSync(join(root, `dist/articles/${slug}/index.html`)), false);
+  }
+  assert.equal(existsSync(join(root, "dist/preview/samples/index.html")), false);
+});
+
+test("safe defaults disable indexing and use the formal domain", () => {
+  const home = read("dist/index.html");
+  const robots = read("dist/robots.txt");
+  assert.match(home, /name="robots" content="noindex, nofollow"/);
+  assert.match(home, /https:\/\/qiuhai\.net\.cn/);
+  assert.match(robots, /Disallow: \/(?:\n|$)/);
+  assert.doesNotMatch(robots, /Allow: \/(?:\n|$)/);
+});
+
+test("environment example declares centralized production settings without fake filing values", () => {
+  const env = read(".env.example");
+  for (const key of [
+    "SITE_URL",
+    "PUBLIC_INDEXING",
+    "ICP_NUMBER",
+    "ICP_URL",
+    "PUBLIC_SECURITY_NUMBER",
+    "PUBLIC_SECURITY_URL",
+  ]) {
+    assert.match(env, new RegExp(`^${key}=`, "m"), `.env.example missing ${key}`);
+  }
+  assert.match(env, /^SITE_URL=https:\/\/qiuhai\.net\.cn$/m);
+  assert.match(env, /^PUBLIC_INDEXING=false$/m);
+  assert.match(env, /^ICP_NUMBER=$/m);
+  assert.match(env, /^PUBLIC_SECURITY_NUMBER=$/m);
 });

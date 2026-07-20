@@ -1,19 +1,19 @@
 ---
-import { getCollection, type CollectionEntry } from "astro:content";
+import type { CollectionEntry } from "astro:content";
 import ArticleCard from "../../components/ArticleCard.astro";
 import PageIntro from "../../components/PageIntro.astro";
 import { TOPICS } from "../../consts";
 import BaseLayout from "../../layouts/BaseLayout.astro";
+import { getPublicArticles } from "../../lib/articles";
 
 export async function getStaticPaths() {
-  const allPosts = await getCollection("articles", ({ data }) => !data.draft);
+  const allPosts = await getPublicArticles();
   return TOPICS.map((topic) => ({
     params: { topic: topic.slug },
     props: {
       topic,
       posts: allPosts
-        .filter(({ data }) => data.category === topic.slug)
-        .sort((a, b) => b.data.publishedAt.valueOf() - a.data.publishedAt.valueOf()),
+        .filter(({ data }) => data.category === topic.slug),
     },
   }));
 }

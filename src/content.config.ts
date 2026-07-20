@@ -14,6 +14,7 @@ const articles = defineCollection({
     slug: z.string().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/),
     featured: z.boolean().default(false),
     draft: z.boolean().default(true),
+    sample: z.boolean().default(false),
     originalPlatform: z.string().min(1).optional(),
     originalUrl: z.url().optional(),
     cover: z.string().min(1).optional(),

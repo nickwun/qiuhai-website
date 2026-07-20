@@ -10,6 +10,7 @@ tags:
 slug: why-i-keep-running
 featured: true
 draft: false
+sample: true
 ---
 
 > 说明：这是一篇用于演示网站结构与中文长文排版的示例内容，不代表站主的真实经历或训练建议。

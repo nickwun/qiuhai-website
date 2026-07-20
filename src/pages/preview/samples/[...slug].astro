@@ -1,0 +1,68 @@
+---
+import { render, type CollectionEntry } from "astro:content";
+import ArticleCard from "../../../components/ArticleCard.astro";
+import PageIntro from "../../../components/PageIntro.astro";
+import { CATEGORY_NAMES, SITE } from "../../../consts";
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import { getPreviewSamples } from "../../../lib/articles";
+
+export async function getStaticPaths() {
+  if (import.meta.env.PROD) return [];
+
+  const posts = await getPreviewSamples();
+  return [
+    { params: { slug: undefined }, props: { posts } },
+    ...posts.map((post) => ({ params: { slug: post.data.slug }, props: { posts, post } })),
+  ];
+}
+
+interface Props {
+  posts: CollectionEntry<"articles">[];
+  post?: CollectionEntry<"articles">;
+}
+
+const { posts, post } = Astro.props;
+const rendered = post ? await render(post) : undefined;
+const Content = rendered?.Content;
+---
+
+<BaseLayout
+  title={post ? `${post.data.title}（排版示例）` : "排版示例"}
+  description="仅用于本地开发的排版示例，不是正式文章。"
+  type={post ? "article" : "website"}
+  noindex
+>
+  {
+    post && Content ? (
+      <article>
+        <header class="article-header reading-width">
+          <p class="eyebrow">排版示例 · 非正式文章</p>
+          <h1>{post.data.title}</h1>
+          <p class="article-lead">{post.data.description}</p>
+          <div class="article-byline">
+            <span>{SITE.author}</span>
+            <span>{CATEGORY_NAMES[post.data.category]}</span>
+            <time datetime={post.data.publishedAt.toISOString()}>
+              样本日期 {post.data.publishedAt.toLocaleDateString("zh-CN")}
+            </time>
+          </div>
+        </header>
+        <div class="article-body reading-width">
+          <div class="sample-notice">排版示例，不是正式文章；该页面始终禁止搜索引擎索引。</div>
+          <div class="prose"><Content /></div>
+          <footer class="article-footer"><a href="/preview/samples/">返回样本列表</a></footer>
+        </div>
+      </article>
+    ) : (
+      <>
+        <PageIntro eyebrow="Local Preview · Noindex" title="排版示例" description="这些内容只用于本地检查，不是正式文章，也不会进入首页、文章列表、专题、RSS 或 Sitemap。" />
+        <section class="shell page-content">
+          <div class="sample-notice">排版示例，不是正式文章。生产构建不会生成这些路由。</div>
+          <div class="page-article-list">
+            {posts.map((sample) => <ArticleCard post={sample} hrefBase="/preview/samples" />)}
+          </div>
+        </section>
+      </>
+    )
+  }
+</BaseLayout>
