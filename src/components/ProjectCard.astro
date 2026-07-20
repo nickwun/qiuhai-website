@@ -1,0 +1,28 @@
+---
+import type { Project } from "../data/projects";
+
+interface Props {
+  project: Project;
+  compact?: boolean;
+}
+
+const { project, compact = false } = Astro.props;
+---
+
+<article class:list={["work-card", { compact }]}>
+  <div class="work-card-meta">
+    <p class="work-kicker">PROJECT</p>
+    <span class="work-status">{project.status}</span>
+  </div>
+  {compact ? <h3>{project.title}</h3> : <h2>{project.title}</h2>}
+  <p class="work-description">{project.description}</p>
+  <div class="work-card-action">
+    {
+      project.link && project.linkLabel ? (
+        <a class="text-link" href={project.link}>{project.linkLabel} <span aria-hidden="true">→</span></a>
+      ) : (
+        <span class="project-link-state">链接待补充</span>
+      )
+    }
+  </div>
+</article>

@@ -6,6 +6,10 @@ import test from "node:test";
 const root = new URL("..", import.meta.url).pathname;
 
 const read = (path) => readFileSync(join(root, path), "utf8");
+const articleDirectory = join(root, "src/content/articles");
+const articleFiles = () => readdirSync(articleDirectory).filter((file) => file.endsWith(".md"));
+const frontmatterValue = (content, key) =>
+  content.match(new RegExp(`^${key}:\\s*(.+?)\\s*$`, "m"))?.[1]?.trim().replace(/^(["'])(.*)\1$/, "$2");
 
 test("required source pages and project files exist", () => {
   const requiredFiles = [
@@ -60,8 +64,7 @@ test("content schema declares every requested article field", () => {
 });
 
 test("four layout samples are explicitly marked as sample content", () => {
-  const directory = join(root, "src/content/articles");
-  const articles = readdirSync(directory).filter((file) => file.endsWith(".md"));
+  const articles = articleFiles().filter((article) => /^sample: true$/m.test(read(`src/content/articles/${article}`)));
   assert.equal(articles.length, 4);
 
   const requiredFields = [
@@ -82,6 +85,29 @@ test("four layout samples are explicitly marked as sample content", () => {
       assert.match(content, new RegExp(`^${field}:`, "m"), `${article} missing ${field}`);
     }
     assert.match(content, /^sample: true$/m, `${article} must be an explicit sample`);
+  }
+});
+
+test("every formal article is published across its expected discovery surfaces", () => {
+  const formalArticles = articleFiles()
+    .map((file) => ({ file, content: read(`src/content/articles/${file}`) }))
+    .filter(({ content }) => /^draft: false$/m.test(content) && /^sample: false$/m.test(content));
+  const home = read("dist/index.html");
+  const archive = read("dist/articles/index.html");
+  const rss = read("dist/rss.xml");
+  const sitemap = read("dist/sitemap-0.xml");
+
+  for (const { file, content } of formalArticles) {
+    const title = frontmatterValue(content, "title");
+    const slug = frontmatterValue(content, "slug");
+    const category = frontmatterValue(content, "category");
+    assert.ok(title && slug && category, `${file} is missing public metadata`);
+    assert.match(home, new RegExp(slug), `${title} missing from homepage`);
+    assert.match(archive, new RegExp(slug), `${title} missing from article archive`);
+    assert.match(read(`dist/topics/${category}/index.html`), new RegExp(slug), `${title} missing from category`);
+    assert.match(rss, new RegExp(slug), `${title} missing from RSS`);
+    assert.match(sitemap, new RegExp(slug), `${title} missing from Sitemap`);
+    assert.equal(existsSync(join(root, `dist/articles/${slug}/index.html`)), true, `${title} detail page missing`);
   }
 });
 

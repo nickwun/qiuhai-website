@@ -8,6 +8,7 @@ const widths = [320, 360, 375, 390, 430, 768, 1024, 1440];
 const paths = [
   "/",
   "/articles/",
+  "/works/",
   "/preview/samples/",
   "/preview/samples/long-form-layout-sample/",
 ];

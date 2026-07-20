@@ -1,12 +1,15 @@
 ---
 import ArticleCard from "../components/ArticleCard.astro";
+import ProjectCard from "../components/ProjectCard.astro";
 import { CATEGORY_NAMES, SITE, TOPICS } from "../consts";
+import { getProjects } from "../data/projects";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { getPublicArticles } from "../lib/articles";
 
 const posts = await getPublicArticles();
 const featuredPosts = posts.filter(({ data }) => data.featured).slice(0, 6);
 const latestPosts = posts.slice(0, 5);
+const featuredProjects = getProjects().filter((project) => project.featured);
 ---
 
 <BaseLayout>
@@ -17,7 +20,11 @@ const latestPosts = posts.slice(0, 5);
         <h1>{SITE.name}</h1>
         <p class="hero-subtitle">{SITE.subtitle}</p>
       </div>
-      <p class="hero-note">在这里保存公开的文字、作品和仍在进行中的项目。慢一点，但尽量写得诚实。</p>
+      <p class="hero-note">
+        我是一名长期跑者和写作者。<br />
+        这里收录我关于跑步、创作和普通生活的长期记录，<br />
+        也展示正在进行的作品与项目。
+      </p>
     </div>
   </section>
 
@@ -90,16 +97,7 @@ const latestPosts = posts.slice(0, 5);
         <a class="text-link" href="/works/">查看作品页 →</a>
       </div>
       <div class="works-preview">
-        <article class="work-card">
-          <p class="work-kicker">WRITING</p>
-          <h3>秋海的公开写作</h3>
-          <p>逐步整理公众号与其他平台中已经确认公开的终稿，让内容拥有稳定、可检索的归档。</p>
-        </article>
-        <article class="work-card">
-          <p class="work-kicker">PROJECT</p>
-          <h3>个人内容实验</h3>
-          <p>用小项目练习写作、设计与工具搭建。这里只展示适合公开的阶段性结果。</p>
-        </article>
+        {featuredProjects.map((project) => <ProjectCard project={project} compact />)}
       </div>
     </div>
   </section>
@@ -108,7 +106,8 @@ const latestPosts = posts.slice(0, 5);
     <div class="shell about-strip">
       <h2>关于秋海</h2>
       <div>
-        <p>这是秋海的个人网站，主要记录跑步、写作与普通生活，也用来归档作品和正在做的项目。</p>
+        <p>我是秋海，一名长期跑者和写作者。</p>
+        <p>我跑步十多年，也持续用文字记录训练、家庭和生活中的变化。最近开始学习视频创作和 AI 编程，尝试把过去积累的文章、笔记和经验整理成可以长期保存的作品。</p>
         <a class="text-link" href="/about/">了解更多 →</a>
       </div>
     </div>

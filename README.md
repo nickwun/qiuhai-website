@@ -32,6 +32,12 @@ npm run preview
 
 `npm test` 会先生成生产构建，再检查内容隔离、两种索引模式、部署资产，以及 320–1440px 的浏览器级横向溢出。构建结果位于 `dist/`。
 
+公开内容隐私与图片热链检查可单独运行：
+
+```bash
+npm run check:content
+```
+
 ## 内容管理
 
 在 `src/content/articles/` 新建 Markdown 文件，并填写 frontmatter：
@@ -61,6 +67,8 @@ cover: /images/cover.jpg # 可选
 - 删除样本时，删除对应 Markdown 文件即可；若不再需要任何样本，也可删除 `src/pages/preview/samples/`。
 
 迁移内容时只复制用户明确指定的公开终稿。私人知识库、原始笔记和凭据不得读取或进入本仓库。
+
+正式文章导入格式见 `docs/article-import-template.md`，本批导入状态与人工隐私确认项见 `docs/content-import-report.md`。终稿文件、首次发布日期或公开授权缺失时，不创建占位正式文章。
 
 ## 环境变量
 
