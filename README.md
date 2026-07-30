@@ -87,10 +87,10 @@ node scripts/import-wechat-articles.mjs /path/to/wechat-download
 | `SITE_URL` | canonical、Open Graph、RSS、Sitemap | `https://qiuhai.net.cn` |
 | `PUBLIC_INDEXING` | 是否允许正式页面被索引 | `false` |
 | `PUBLIC_SHOW_PRODUCT_PURCHASE` | 是否显示手册购买二维码与购买入口 | `false` |
-| `ICP_NUMBER` / `ICP_URL` | ICP 备案展示 | 空，不渲染 |
+| `ICP_NUMBER` / `ICP_URL` | ICP 备案展示 | `闽ICP备2026028446号-1` / 工信部备案官网 |
 | `PUBLIC_SECURITY_NUMBER` / `PUBLIC_SECURITY_URL` | 公安备案展示 | 空，不渲染 |
 
-ICP备案审核期间保持 `PUBLIC_INDEXING=false` 和 `PUBLIC_SHOW_PRODUCT_PURCHASE=false`。只有明确设置 `PUBLIC_SHOW_PRODUCT_PURCHASE=true` 时，文章才会显示已本地化的手册二维码；样本页无论索引变量为何值都始终 `noindex`。
+首次上线保持 `PUBLIC_INDEXING=false` 和 `PUBLIC_SHOW_PRODUCT_PURCHASE=false`。只有后续明确设置 `PUBLIC_SHOW_PRODUCT_PURCHASE=true` 时，文章才会显示已本地化的手册二维码；样本页无论索引变量为何值都始终 `noindex`。ICP备案号是已公开的网站信息，不属于密钥；公安备案号为空时不渲染。
 
 ## 部署
 

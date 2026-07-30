@@ -1,5 +1,6 @@
 export const SITE = {
   name: "秋海",
+  serviceName: "跑步写作手记",
   subtitle: "跑步、写作与普通生活",
   description: "秋海的个人博客，记录跑步、写作、作品与普通生活。",
   author: "秋海",

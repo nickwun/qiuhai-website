@@ -9,6 +9,23 @@ elif [[ -n "${1:-}" ]]; then
   exit 2
 fi
 
+export SITE_URL="${SITE_URL:-https://qiuhai.net.cn}"
+export PUBLIC_INDEXING="${PUBLIC_INDEXING:-false}"
+export PUBLIC_SHOW_PRODUCT_PURCHASE="${PUBLIC_SHOW_PRODUCT_PURCHASE:-false}"
+export ICP_NUMBER="${ICP_NUMBER:-闽ICP备2026028446号-1}"
+export ICP_URL="${ICP_URL:-https://beian.miit.gov.cn/}"
+export PUBLIC_SECURITY_NUMBER="${PUBLIC_SECURITY_NUMBER:-}"
+export PUBLIC_SECURITY_URL="${PUBLIC_SECURITY_URL:-}"
+
+if [[ "$PUBLIC_INDEXING" != "false" ]]; then
+  echo "首次上线必须保持 PUBLIC_INDEXING=false。" >&2
+  exit 2
+fi
+if [[ "$PUBLIC_SHOW_PRODUCT_PURCHASE" != "false" ]]; then
+  echo "首次上线必须保持 PUBLIC_SHOW_PRODUCT_PURCHASE=false。" >&2
+  exit 2
+fi
+
 npm run check
 npm test
 npm run build

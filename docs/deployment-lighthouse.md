@@ -28,8 +28,9 @@
 ```bash
 export SITE_URL=https://qiuhai.net.cn
 export PUBLIC_INDEXING=false
-export ICP_NUMBER=
-export ICP_URL=
+export PUBLIC_SHOW_PRODUCT_PURCHASE=false
+export ICP_NUMBER=闽ICP备2026028446号-1
+export ICP_URL=https://beian.miit.gov.cn/
 export PUBLIC_SECURITY_NUMBER=
 export PUBLIC_SECURITY_URL=
 ```
@@ -43,9 +44,11 @@ export LIGHTHOUSE_PORT=your-ssh-port
 export LIGHTHOUSE_PATH=/var/www/qiuhai
 ```
 
-不要把这些值写进脚本、README、提交的 `.env` 或命令历史。项目只提交 `.env.example`。
+上述站点、索引、购买入口和备案信息均为公开构建配置；项目以 `.env.example` 和部署脚本中的安全默认值为准。主机地址、用户名、SSH 端口、私钥和其他凭据仍不得写进脚本、README、提交的 `.env` 或命令历史。
 
 `LIGHTHOUSE_USER` 必须是非 root 专用部署用户，`LIGHTHOUSE_PATH` 固定为 `/var/www/qiuhai`。
+
+如同一台服务器还承担微信公众号发布节点，博客部署必须继续使用独立的 `qiuhai-deploy` 用户和 `/var/www/qiuhai`，不得读取、修改或重启 `wechat-publisher` 用户下的程序、凭据与临时目录。
 
 ## 验证、部署与回滚
 
