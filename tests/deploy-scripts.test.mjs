@@ -119,16 +119,42 @@ test("the release directory model supports an atomic current symlink switch", ()
   }
 });
 
-test("the Nginx template is static HTTP-only preparation with the expected document root", () => {
+test("the Nginx template enforces the approved HTTPS host and redirect contract", () => {
   const nginx = read("deploy/nginx/qiuhai.net.cn.conf");
-  assert.match(nginx, /listen 80 default_server;/);
-  assert.match(nginx, /server_name _;/);
-  assert.match(nginx, /return 444;/);
-  assert.match(nginx, /server_name qiuhai\.net\.cn www\.qiuhai\.net\.cn;/);
-  assert.match(nginx, /root \/var\/www\/qiuhai\/current;/);
-  assert.match(nginx, /listen 80;/);
-  assert.doesNotMatch(nginx, /return 301/);
-  assert.doesNotMatch(nginx, /listen 443|ssl_certificate|proxy_pass/);
+  const fullchain = "/etc/letsencrypt/live/qiuhai.net.cn/fullchain.pem";
+  const privateKey = "/etc/letsencrypt/live/qiuhai.net.cn/privkey.pem";
+
+  assert.match(
+    nginx,
+    /listen 80 default_server;[\s\S]*?server_name _;[\s\S]*?return 444;/,
+    "unknown HTTP hosts must be closed",
+  );
+  assert.match(
+    nginx,
+    /listen 80;[\s\S]*?server_name qiuhai\.net\.cn www\.qiuhai\.net\.cn;[\s\S]*?return 301 https:\/\/qiuhai\.net\.cn\$request_uri;/,
+    "known HTTP hosts must redirect to canonical HTTPS",
+  );
+  assert.match(
+    nginx,
+    /listen 443 ssl default_server;[\s\S]*?server_name _;[\s\S]*?return 444;/,
+    "unknown HTTPS hosts must complete TLS and close without serving the site",
+  );
+  assert.match(
+    nginx,
+    /listen 443 ssl;[\s\S]*?server_name www\.qiuhai\.net\.cn;[\s\S]*?return 301 https:\/\/qiuhai\.net\.cn\$request_uri;/,
+    "HTTPS www must redirect to the canonical host",
+  );
+  assert.match(
+    nginx,
+    /listen 443 ssl;[\s\S]*?server_name qiuhai\.net\.cn;[\s\S]*?root \/var\/www\/qiuhai\/current;/,
+    "the canonical HTTPS host must serve the static release",
+  );
+  assert.equal(nginx.split(`ssl_certificate ${fullchain};`).length - 1, 3);
+  assert.equal(nginx.split(`ssl_certificate_key ${privateKey};`).length - 1, 3);
+  assert.match(nginx, /ssl_protocols TLSv1\.2 TLSv1\.3;/);
+  assert.doesNotMatch(nginx, /BEGIN [A-Z ]*PRIVATE KEY/);
+  assert.doesNotMatch(nginx, /\b(?:\d{1,3}\.){3}\d{1,3}\b/);
+  assert.doesNotMatch(nginx, /Strict-Transport-Security|proxy_pass|\/home\/wechat-publisher/);
 });
 
 test("the main protection status check runs the existing baseline commands without deploying", () => {
