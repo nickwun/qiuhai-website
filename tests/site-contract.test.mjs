@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { createHash } from "node:crypto";
 import { existsSync, readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 import test from "node:test";
@@ -6,6 +7,7 @@ import test from "node:test";
 const root = new URL("..", import.meta.url).pathname;
 
 const read = (path) => readFileSync(join(root, path), "utf8");
+const sha256 = (path) => createHash("sha256").update(readFileSync(join(root, path))).digest("hex");
 const articleDirectory = join(root, "src/content/articles");
 const articleFiles = () => readdirSync(articleDirectory).filter((file) => file.endsWith(".md"));
 const frontmatterValue = (content, key) =>
@@ -38,6 +40,16 @@ test("required source pages and project files exist", () => {
   for (const file of requiredFiles) {
     assert.equal(existsSync(join(root, file)), true, `missing ${file}`);
   }
+});
+
+test("Baidu verification file is preserved verbatim in source and build output", () => {
+  const verificationFile = "baidu_verify_codeva-O3Ni0PhIGW.html";
+  const expectedSha256 = "c172fadf8bd74b373e09b60919334f09de238dd81998a0a6f1acd8de5b833923";
+
+  assert.equal(existsSync(join(root, "public", verificationFile)), true, "missing source verification file");
+  assert.equal(sha256(join("public", verificationFile)), expectedSha256, "source verification file changed");
+  assert.equal(existsSync(join(root, "dist", verificationFile)), true, "missing built verification file");
+  assert.equal(sha256(join("dist", verificationFile)), expectedSha256, "built verification file changed");
 });
 
 test("content schema declares every requested article field", () => {
