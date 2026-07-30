@@ -4,7 +4,7 @@ const publicDefault = (value: string | undefined, fallback: string) =>
 
 export const SITE_CONFIG = {
   siteUrl: clean(import.meta.env.SITE_URL) || "https://qiuhai.net.cn",
-  indexing: clean(import.meta.env.PUBLIC_INDEXING).toLowerCase() === "true",
+  indexing: publicDefault(import.meta.env.PUBLIC_INDEXING, "true").toLowerCase() === "true",
   showProductPurchase: clean(import.meta.env.PUBLIC_SHOW_PRODUCT_PURCHASE).toLowerCase() === "true",
   filings: {
     icp: {

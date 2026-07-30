@@ -49,6 +49,10 @@ test("manual deployment validates locally and guards remote mutation in dry-run"
   assert.match(script, /rsync/);
   assert.match(script, /ln -sfn/);
   assert.match(script, /verify-deployment\.sh/);
+  assert.match(script, /PUBLIC_INDEXING="\$\{PUBLIC_INDEXING:-true\}"/);
+  assert.match(script, /if \[\[ "\$PUBLIC_INDEXING" != "true" \]\]/);
+  assert.match(script, /PUBLIC_SHOW_PRODUCT_PURCHASE="\$\{PUBLIC_SHOW_PRODUCT_PURCHASE:-false\}"/);
+  assert.match(script, /if \[\[ "\$PUBLIC_SHOW_PRODUCT_PURCHASE" != "false" \]\]/);
 
   const guard = script.indexOf('if [[ "$DRY_RUN" == "true" ]]');
   const upload = script.indexOf("rsync");
