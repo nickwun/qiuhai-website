@@ -121,9 +121,13 @@ test("the release directory model supports an atomic current symlink switch", ()
 
 test("the Nginx template is static HTTP-only preparation with the expected document root", () => {
   const nginx = read("deploy/nginx/qiuhai.net.cn.conf");
-  assert.match(nginx, /server_name qiuhai\.net\.cn/);
+  assert.match(nginx, /listen 80 default_server;/);
+  assert.match(nginx, /server_name _;/);
+  assert.match(nginx, /return 444;/);
+  assert.match(nginx, /server_name qiuhai\.net\.cn www\.qiuhai\.net\.cn;/);
   assert.match(nginx, /root \/var\/www\/qiuhai\/current;/);
   assert.match(nginx, /listen 80;/);
+  assert.doesNotMatch(nginx, /return 301/);
   assert.doesNotMatch(nginx, /listen 443|ssl_certificate|proxy_pass/);
 });
 
