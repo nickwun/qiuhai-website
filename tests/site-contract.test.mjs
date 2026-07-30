@@ -139,6 +139,7 @@ test("production build exposes static discovery files and article metadata", () 
   assert.match(layout, /property="og:type"/);
   assert.match(articleRoute, /"@type": "BlogPosting"/);
   assert.match(layout, /rel="canonical"/);
+  assert.match(layout, /href="\/favicon\.svg\?v=ring-1"/);
 });
 
 test("sample and draft content stay outside every production discovery surface", () => {
