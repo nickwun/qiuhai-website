@@ -141,7 +141,7 @@ test("production build exposes static discovery files and article metadata", () 
   assert.match(layout, /rel="canonical"/);
 });
 
-test("sample content is absent from every production discovery surface", () => {
+test("sample and draft content stay outside every production discovery surface", () => {
   const sampleSlugs = [
     "leave-some-space",
     "why-i-keep-running",
@@ -163,17 +163,20 @@ test("sample content is absent from every production discovery surface", () => {
     assert.doesNotMatch(publicOutputs, new RegExp(slug), `${slug} leaked into production output`);
     assert.equal(existsSync(join(root, `dist/articles/${slug}/index.html`)), false);
   }
+  assert.match(read("src/lib/articles.ts"), /!data\.draft && !data\.sample/);
   assert.equal(existsSync(join(root, "dist/preview/samples/index.html")), false);
 });
 
-test("safe defaults disable indexing and use the formal domain", () => {
+test("production defaults allow indexing while purchase entry remains disabled", () => {
   const home = read("dist/index.html");
   const robots = read("dist/robots.txt");
-  assert.match(home, /name="robots" content="noindex, nofollow"/);
+  assert.match(home, /name="robots" content="index, follow"/);
+  assert.doesNotMatch(home, /noindex, nofollow/);
   assert.match(home, /https:\/\/qiuhai\.net\.cn/);
   assert.doesNotMatch(home, /handbook-qr\.png|低心率慢跑手册二维码/);
-  assert.match(robots, /Disallow: \/(?:\n|$)/);
-  assert.doesNotMatch(robots, /Allow: \/(?:\n|$)/);
+  assert.match(robots, /Allow: \/(?:\n|$)/);
+  assert.match(robots, /Sitemap: https:\/\/qiuhai\.net\.cn\/sitemap-index\.xml/);
+  assert.doesNotMatch(robots, /Disallow: \/(?:\n|$)/);
 });
 
 test("all public page titles contain the filed service name", () => {
@@ -217,7 +220,7 @@ test("environment example declares centralized production settings with approved
     assert.match(env, new RegExp(`^${key}=`, "m"), `.env.example missing ${key}`);
   }
   assert.match(env, /^SITE_URL=https:\/\/qiuhai\.net\.cn$/m);
-  assert.match(env, /^PUBLIC_INDEXING=false$/m);
+  assert.match(env, /^PUBLIC_INDEXING=true$/m);
   assert.match(env, /^PUBLIC_SHOW_PRODUCT_PURCHASE=false$/m);
   assert.match(env, /^ICP_NUMBER=闽ICP备2026028446号-1$/m);
   assert.match(env, /^ICP_URL=https:\/\/beian\.miit\.gov\.cn\/$/m);

@@ -27,7 +27,7 @@
 
 ```bash
 export SITE_URL=https://qiuhai.net.cn
-export PUBLIC_INDEXING=false
+export PUBLIC_INDEXING=true
 export PUBLIC_SHOW_PRODUCT_PURCHASE=false
 export ICP_NUMBER=闽ICP备2026028446号-1
 export ICP_URL=https://beian.miit.gov.cn/
