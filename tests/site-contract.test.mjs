@@ -171,11 +171,39 @@ test("safe defaults disable indexing and use the formal domain", () => {
   const robots = read("dist/robots.txt");
   assert.match(home, /name="robots" content="noindex, nofollow"/);
   assert.match(home, /https:\/\/qiuhai\.net\.cn/);
+  assert.doesNotMatch(home, /handbook-qr\.png|低心率慢跑手册二维码/);
   assert.match(robots, /Disallow: \/(?:\n|$)/);
   assert.doesNotMatch(robots, /Allow: \/(?:\n|$)/);
 });
 
-test("environment example declares centralized production settings without fake filing values", () => {
+test("all public page titles contain the filed service name", () => {
+  const pages = [
+    "dist/index.html",
+    "dist/articles/index.html",
+    "dist/articles/does-low-heart-rate-running-work/index.html",
+    "dist/topics/index.html",
+    "dist/topics/running/index.html",
+    "dist/works/index.html",
+    "dist/about/index.html",
+    "dist/now/index.html",
+    "dist/404.html",
+  ];
+
+  assert.match(read("dist/index.html"), /<title>秋海｜跑步写作手记<\/title>/);
+  for (const page of pages) {
+    const title = read(page).match(/<title>(.*?)<\/title>/)?.[1];
+    assert.ok(title?.includes("跑步写作手记"), `${page} title missing filed service name`);
+  }
+});
+
+test("approved ICP filing is visible and public security filing remains absent", () => {
+  const home = read("dist/index.html");
+  assert.match(home, /闽ICP备2026028446号-1/);
+  assert.match(home, /href="https:\/\/beian\.miit\.gov\.cn\/"/);
+  assert.doesNotMatch(home, /公安备案|公网安备/);
+});
+
+test("environment example declares centralized production settings with approved filing values", () => {
   const env = read(".env.example");
   for (const key of [
     "SITE_URL",
@@ -191,6 +219,7 @@ test("environment example declares centralized production settings without fake 
   assert.match(env, /^SITE_URL=https:\/\/qiuhai\.net\.cn$/m);
   assert.match(env, /^PUBLIC_INDEXING=false$/m);
   assert.match(env, /^PUBLIC_SHOW_PRODUCT_PURCHASE=false$/m);
-  assert.match(env, /^ICP_NUMBER=$/m);
+  assert.match(env, /^ICP_NUMBER=闽ICP备2026028446号-1$/m);
+  assert.match(env, /^ICP_URL=https:\/\/beian\.miit\.gov\.cn\/$/m);
   assert.match(env, /^PUBLIC_SECURITY_NUMBER=$/m);
 });

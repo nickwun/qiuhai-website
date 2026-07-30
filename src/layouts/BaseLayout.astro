@@ -27,7 +27,7 @@ const {
   noindex = false,
 } = Astro.props;
 
-const pageTitle = title === SITE.name ? `${SITE.name}｜${SITE.subtitle}` : `${title}｜${SITE.name}`;
+const pageTitle = title === SITE.name ? `${SITE.name}｜${SITE.serviceName}` : `${title}｜${SITE.serviceName}`;
 const canonical = new URL(Astro.url.pathname, Astro.site ?? Astro.url.origin);
 const ogImage = cover ? new URL(cover, Astro.site ?? Astro.url.origin) : undefined;
 const robots = SITE_CONFIG.indexing && !noindex ? "index, follow" : "noindex, nofollow";
