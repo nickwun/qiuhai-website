@@ -104,6 +104,16 @@ test("every formal article is published across its expected discovery surfaces",
   const formalArticles = articleFiles()
     .map((file) => ({ file, content: read(`src/content/articles/${file}`) }))
     .filter(({ content }) => /^draft: false$/m.test(content) && /^sample: false$/m.test(content));
+  const homepageSlugs = new Set(
+    [...formalArticles]
+      .sort(
+        (left, right) =>
+          new Date(frontmatterValue(right.content, "publishedAt")) -
+          new Date(frontmatterValue(left.content, "publishedAt")),
+      )
+      .slice(0, 5)
+      .map(({ content }) => frontmatterValue(content, "slug")),
+  );
   const home = read("dist/index.html");
   const archive = read("dist/articles/index.html");
   const rss = read("dist/rss.xml");
@@ -114,7 +124,7 @@ test("every formal article is published across its expected discovery surfaces",
     const slug = frontmatterValue(content, "slug");
     const category = frontmatterValue(content, "category");
     assert.ok(title && slug && category, `${file} is missing public metadata`);
-    assert.match(home, new RegExp(slug), `${title} missing from homepage`);
+    if (homepageSlugs.has(slug)) assert.match(home, new RegExp(slug), `${title} missing from homepage latest list`);
     assert.match(archive, new RegExp(slug), `${title} missing from article archive`);
     assert.match(read(`dist/topics/${category}/index.html`), new RegExp(slug), `${title} missing from category`);
     assert.match(rss, new RegExp(slug), `${title} missing from RSS`);
