@@ -10,9 +10,17 @@ const posts = await getPublicArticles();
 const featuredPosts = posts.filter(({ data }) => data.featured).slice(0, 6);
 const latestPosts = posts.slice(0, 5);
 const featuredProjects = getProjects().filter((project) => project.featured);
+const websiteJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "@id": "https://qiuhai.net.cn/#website",
+  url: "https://qiuhai.net.cn/",
+  name: "秋海",
+  alternateName: ["秋海｜跑步写作手记", "跑步写作手记", "qiuhai.net.cn"],
+};
 ---
 
-<BaseLayout>
+<BaseLayout jsonLd={websiteJsonLd}>
   <section class="hero">
     <div class="shell hero-inner">
       <div>
