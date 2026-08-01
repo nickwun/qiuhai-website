@@ -12,8 +12,11 @@ export const SITE_CONFIG = {
       url: publicDefault(import.meta.env.ICP_URL, "https://beian.miit.gov.cn/"),
     },
     publicSecurity: {
-      number: clean(import.meta.env.PUBLIC_SECURITY_NUMBER),
-      url: clean(import.meta.env.PUBLIC_SECURITY_URL),
+      number: publicDefault(import.meta.env.PUBLIC_SECURITY_NUMBER, "闽公网安备35018102240193号"),
+      url: publicDefault(
+        import.meta.env.PUBLIC_SECURITY_URL,
+        "https://beian.mps.gov.cn/#/query/webSearch?code=35018102240193",
+      ),
     },
   },
 } as const;
