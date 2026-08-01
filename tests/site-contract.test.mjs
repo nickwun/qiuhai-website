@@ -212,11 +212,44 @@ test("all public page titles contain the filed service name", () => {
   }
 });
 
-test("approved ICP filing is visible and public security filing remains absent", () => {
-  const home = read("dist/index.html");
-  assert.match(home, /闽ICP备2026028446号-1/);
-  assert.match(home, /href="https:\/\/beian\.miit\.gov\.cn\/"/);
-  assert.doesNotMatch(home, /公安备案|公网安备/);
+test("approved ICP and public security filings render globally with the official asset and link", () => {
+  const publicSecurityNumber = "闽公网安备35018102240193号";
+  const publicSecurityUrl = "https://beian.mps.gov.cn/#/query/webSearch?code=35018102240193";
+  const publicSecurityIcon = "assets/filing/public-security.png";
+  const publicSecurityIconSha256 = "8dfecad0dfcb3dc584f2c2447943eefb1fd65a058856eb0611e2c56ddc4c1fe1";
+  const pages = [
+    "dist/index.html",
+    "dist/articles/index.html",
+    "dist/articles/before-memory-fades-understanding-grandfather/index.html",
+    "dist/articles/does-low-heart-rate-running-work/index.html",
+    "dist/articles/i-gave-data-the-power-to-judge-me/index.html",
+    "dist/topics/index.html",
+    "dist/works/index.html",
+    "dist/about/index.html",
+    "dist/now/index.html",
+    "dist/404.html",
+  ];
+
+  assert.equal(existsSync(join(root, "public", publicSecurityIcon)), true, "missing official filing icon");
+  assert.equal(sha256(join("public", publicSecurityIcon)), publicSecurityIconSha256, "source filing icon changed");
+  assert.equal(existsSync(join(root, "dist", publicSecurityIcon)), true, "missing built filing icon");
+  assert.equal(sha256(join("dist", publicSecurityIcon)), publicSecurityIconSha256, "built filing icon changed");
+
+  for (const page of pages) {
+    const html = read(page);
+    assert.match(html, /闽ICP备2026028446号-1/, `${page} missing ICP filing`);
+    assert.match(html, /href="https:\/\/beian\.miit\.gov\.cn\/"/, `${page} has the wrong ICP link`);
+    assert.equal(html.split(publicSecurityNumber).length - 1, 1, `${page} must show the public security filing once`);
+
+    const filingLink = html.match(/<a[^>]*class="public-security-filing"[^>]*>[\s\S]*?<\/a>/)?.[0];
+    assert.ok(filingLink, `${page} missing public security filing link`);
+    assert.match(filingLink, new RegExp(`href="${publicSecurityUrl.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}"`));
+    assert.match(filingLink, /target="_blank"/);
+    assert.match(filingLink, /rel="noopener noreferrer"/);
+    assert.match(filingLink, /<img[^>]*src="\/assets\/filing\/public-security\.png"[^>]*alt="公安备案"/);
+    assert.ok(filingLink.indexOf("public-security.png") < filingLink.indexOf(publicSecurityNumber));
+    assert.doesNotMatch(filingLink, /\/Users\/|(?:\d{1,3}\.){3}\d{1,3}|BEGIN (?:RSA |OPENSSH )?PRIVATE KEY/);
+  }
 });
 
 test("environment example declares centralized production settings with approved filing values", () => {
@@ -237,5 +270,19 @@ test("environment example declares centralized production settings with approved
   assert.match(env, /^PUBLIC_SHOW_PRODUCT_PURCHASE=false$/m);
   assert.match(env, /^ICP_NUMBER=闽ICP备2026028446号-1$/m);
   assert.match(env, /^ICP_URL=https:\/\/beian\.miit\.gov\.cn\/$/m);
-  assert.match(env, /^PUBLIC_SECURITY_NUMBER=$/m);
+  assert.match(env, /^PUBLIC_SECURITY_NUMBER=闽公网安备35018102240193号$/m);
+  assert.match(
+    env,
+    /^PUBLIC_SECURITY_URL="https:\/\/beian\.mps\.gov\.cn\/#\/query\/webSearch\?code=35018102240193"$/m,
+  );
+
+  const config = read("src/config.ts");
+  const deploy = read("scripts/deploy-manual.sh");
+  assert.match(config, /闽公网安备35018102240193号/);
+  assert.match(config, /https:\/\/beian\.mps\.gov\.cn\/#\/query\/webSearch\?code=35018102240193/);
+  assert.match(deploy, /PUBLIC_SECURITY_NUMBER="\$\{PUBLIC_SECURITY_NUMBER:-闽公网安备35018102240193号\}"/);
+  assert.match(
+    deploy,
+    /PUBLIC_SECURITY_URL="\$\{PUBLIC_SECURITY_URL:-https:\/\/beian\.mps\.gov\.cn\/#\/query\/webSearch\?code=35018102240193\}"/,
+  );
 });

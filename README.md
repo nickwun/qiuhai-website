@@ -88,9 +88,9 @@ node scripts/import-wechat-articles.mjs /path/to/wechat-download
 | `PUBLIC_INDEXING` | 是否允许正式页面被索引 | `true` |
 | `PUBLIC_SHOW_PRODUCT_PURCHASE` | 是否显示手册购买二维码与购买入口 | `false` |
 | `ICP_NUMBER` / `ICP_URL` | ICP 备案展示 | `闽ICP备2026028446号-1` / 工信部备案官网 |
-| `PUBLIC_SECURITY_NUMBER` / `PUBLIC_SECURITY_URL` | 公安备案展示 | 空，不渲染 |
+| `PUBLIC_SECURITY_NUMBER` / `PUBLIC_SECURITY_URL` | 公安备案展示 | `闽公网安备35018102240193号` / 公安备案官方查询页 |
 
-当前正式部署保持 `PUBLIC_INDEXING=true` 和 `PUBLIC_SHOW_PRODUCT_PURCHASE=false`。只有后续明确设置 `PUBLIC_SHOW_PRODUCT_PURCHASE=true` 时，文章才会显示已本地化的手册二维码；样本页无论索引变量为何值都始终 `noindex`，且 sample 与 draft 内容不会进入生产路由、RSS 或 Sitemap。ICP备案号是已公开的网站信息，不属于密钥；公安备案号为空时不渲染。
+当前正式部署保持 `PUBLIC_INDEXING=true` 和 `PUBLIC_SHOW_PRODUCT_PURCHASE=false`。只有后续明确设置 `PUBLIC_SHOW_PRODUCT_PURCHASE=true` 时，文章才会显示已本地化的手册二维码；样本页无论索引变量为何值都始终 `noindex`，且 sample 与 draft 内容不会进入生产路由、RSS 或 Sitemap。ICP 与公安备案号都是已公开的网站合规信息，不属于密钥；如显式将对应环境变量设为空，则不渲染该备案区域。
 
 ## 部署
 

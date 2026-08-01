@@ -799,6 +799,23 @@ h3 {
   gap: 8px 18px;
 }
 
+.public-security-filing {
+  display: inline-flex;
+  max-width: 100%;
+  align-items: center;
+  gap: 5px;
+}
+
+.public-security-filing img {
+  width: 18px;
+  height: 20px;
+  flex: 0 0 auto;
+}
+
+.public-security-filing span {
+  overflow-wrap: anywhere;
+}
+
 @media (max-width: 880px) {
   .hero-inner,
   .works-preview,

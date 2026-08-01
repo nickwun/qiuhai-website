@@ -9,6 +9,7 @@ export default defineConfig({
   outDir,
   output: "static",
   trailingSlash: "always",
+  devToolbar: { enabled: false },
   integrations: [
     sitemap({
       filter: (page) => !page.endsWith("/404/") && !page.includes("/preview/"),

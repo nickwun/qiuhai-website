@@ -24,7 +24,15 @@ const year = new Date().getFullYear();
           )}
           {SITE_CONFIG.filings.publicSecurity.number && (
             SITE_CONFIG.filings.publicSecurity.url ? (
-              <a href={SITE_CONFIG.filings.publicSecurity.url} rel="nofollow">{SITE_CONFIG.filings.publicSecurity.number}</a>
+              <a
+                class="public-security-filing"
+                href={SITE_CONFIG.filings.publicSecurity.url}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <img src="/assets/filing/public-security.png" alt="公安备案" width="18" height="20" />
+                <span>{SITE_CONFIG.filings.publicSecurity.number}</span>
+              </a>
             ) : (
               <span>{SITE_CONFIG.filings.publicSecurity.number}</span>
             )
