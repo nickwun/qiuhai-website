@@ -12,6 +12,26 @@ const articleDirectory = join(root, "src/content/articles");
 const articleFiles = () => readdirSync(articleDirectory).filter((file) => file.endsWith(".md"));
 const frontmatterValue = (content, key) =>
   content.match(new RegExp(`^${key}:\\s*(.+?)\\s*$`, "m"))?.[1]?.trim().replace(/^(["'])(.*)\1$/, "$2");
+const jsonLdNodes = (html) => {
+  const documents = [...html.matchAll(/<script\b[^>]*type="application\/ld\+json"[^>]*>([\s\S]*?)<\/script>/g)].map(
+    ([, json]) => JSON.parse(json),
+  );
+  const nodes = [];
+  const collect = (value) => {
+    if (Array.isArray(value)) {
+      value.forEach(collect);
+    } else if (value && typeof value === "object") {
+      if (value["@type"]) nodes.push(value);
+      if (value["@graph"]) collect(value["@graph"]);
+    }
+  };
+  documents.forEach(collect);
+  return nodes;
+};
+const websiteNodes = (html) =>
+  jsonLdNodes(html).filter(({ "@type": type }) =>
+    Array.isArray(type) ? type.includes("WebSite") : type === "WebSite",
+  );
 
 test("required source pages and project files exist", () => {
   const requiredFiles = [
@@ -162,6 +182,37 @@ test("production build exposes static discovery files and article metadata", () 
   assert.match(articleRoute, /"@type": "BlogPosting"/);
   assert.match(layout, /rel="canonical"/);
   assert.match(layout, /href="\/favicon\.svg\?v=ring-1"/);
+});
+
+test("only the homepage exposes the canonical WebSite name JSON-LD", () => {
+  const home = read("dist/index.html");
+  const homeWebsites = websiteNodes(home);
+
+  assert.equal(homeWebsites.length, 1, "homepage must expose exactly one WebSite node");
+  assert.deepEqual(homeWebsites[0], {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "@id": "https://qiuhai.net.cn/#website",
+    url: "https://qiuhai.net.cn/",
+    name: "秋海",
+    alternateName: ["秋海｜跑步写作手记", "跑步写作手记", "qiuhai.net.cn"],
+  });
+
+  for (const page of [
+    "dist/articles/index.html",
+    "dist/articles/does-low-heart-rate-running-work/index.html",
+    "dist/about/index.html",
+    "dist/works/index.html",
+  ]) {
+    assert.equal(websiteNodes(read(page)).length, 0, `${page} must not expose a WebSite node`);
+  }
+
+  assert.match(home, /<title>秋海｜跑步写作手记<\/title>/);
+  assert.equal([...home.matchAll(/<h1\b[^>]*>秋海<\/h1>/g)].length, 1);
+  assert.match(home, /<meta property="og:site_name" content="秋海">/);
+  assert.match(home, /<link rel="canonical" href="https:\/\/qiuhai\.net\.cn\/">/);
+  assert.match(home, /<meta name="robots" content="index, follow">/);
+  assert.doesNotMatch(home, /noindex|\/Users\/|(?:\d{1,3}\.){3}\d{1,3}|BEGIN (?:RSA |OPENSSH )?PRIVATE KEY/);
 });
 
 test("sample and draft content stay outside every production discovery surface", () => {
