@@ -64,11 +64,11 @@ test("the import report records all formal sources, dates, cleanup, and privacy 
   assert.doesNotMatch(report, /未提供终稿/);
 });
 
-test("privacy scanner reports ten formal articles without automated high-risk matches", () => {
+test("privacy scanner reports fifteen formal articles without automated high-risk matches", () => {
   const result = spawnSync("node", ["scripts/check-public-content.mjs", "--json"], { cwd: root, encoding: "utf8" });
   assert.equal(result.status, 0, result.stderr);
   const output = JSON.parse(result.stdout);
-  assert.equal(output.formalArticleCount, 10);
+  assert.equal(output.formalArticleCount, 15);
   assert.deepEqual(output.missingTitles, []);
   assert.deepEqual(output.risks, []);
 });
