@@ -85,7 +85,7 @@
 - 首页与推荐文章: 首页源文件、布局源文件和文案未修改；正式 featured 文章仍为原有 3 篇。
 - 站点不变量: WebSite JSON-LD 所在布局未修改，文章页没有新增 WebSite 节点；百度验证文件未修改；`.env.example` 仍为 `PUBLIC_INDEXING=true`、`PUBLIC_SHOW_PRODUCT_PURCHASE=false`。
 - 知识库: 工作树 clean，源文件未修改。
-- CI: 待执行
+- CI: PR #17 的 `check-test-build` 已通过；PR 保持 open，未合并、未部署。
 
 ## 人工门
 
